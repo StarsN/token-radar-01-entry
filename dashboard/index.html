@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Token Launch Radar — pre-token protocols, ranked by what a launch would be worth</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<header class="masthead">
+  <div class="masthead-in">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true"></div>
+      <div>
+        <h1>Token Launch Radar</h1>
+        <p class="tagline">Every protocol that still records no token, ranked by what its launch would be worth — and how to farm it.</p>
+      </div>
+    </div>
+    <div class="mast-stats" id="mastStats"></div>
+  </div>
+  <nav class="tabs" aria-label="Views">
+    <a href="#/" data-nav="board">The board</a>
+    <a href="#/method" data-nav="method">Method &amp; calibration</a>
+  </nav>
+</header>
+
+<main>
+  <section id="viewBoard">
+    <div class="controls" role="search">
+      <label class="ctl ctl-search">Search
+        <input id="fSearch" type="search" placeholder="Protocol name or slug" autocomplete="off">
+      </label>
+      <label class="ctl">Category
+        <select id="fCategory"></select>
+      </label>
+      <label class="ctl">Chain
+        <select id="fChain"></select>
+      </label>
+      <label class="ctl">Implied value at least
+        <select id="fMinValue">
+          <option value="0">Any</option>
+          <option value="1000000">$1M</option>
+          <option value="10000000">$10M</option>
+          <option value="50000000">$50M</option>
+          <option value="100000000">$100M</option>
+          <option value="500000000">$500M</option>
+        </select>
+      </label>
+      <label class="ctl ctl-check">
+        <input id="fWatch" type="checkbox"> Watchlist only
+      </label>
+      <span class="ctl-count" id="rowCount"></span>
+    </div>
+
+    <div class="table-wrap">
+      <table class="board" id="boardTable">
+        <thead>
+          <tr>
+            <th data-sort="rank" class="num">Rank</th>
+            <th data-sort="name">Protocol</th>
+            <th data-sort="category">Category</th>
+            <th data-sort="tvl_usd" class="num">TVL</th>
+            <th data-sort="change_7d" class="num">7d</th>
+            <th data-sort="multiple" class="num">Multiple</th>
+            <th data-sort="implied_value_usd" class="num">Implied value</th>
+            <th class="farm-hint">Farm plan</th>
+          </tr>
+        </thead>
+        <tbody id="boardBody"></tbody>
+      </table>
+    </div>
+    <p class="foot-note" id="boardFoot"></p>
+  </section>
+
+  <section id="viewDetail" hidden></section>
+
+  <section id="viewMethod" hidden>
+    <div class="method-grid">
+      <article class="panel">
+        <h2>What the radar keeps</h2>
+        <p>A protocol is a launch candidate when the snapshot records <strong>no token</strong> for it
+        (no gecko id, no symbol, no market cap) and it is not a product of something that already trades.
+        Products are removed four ways, and the counts are the snapshot's own:</p>
+        <ul class="rules" id="filterRules"></ul>
+        <p class="caveat">DefiLlama's record is evidence, not proof: the board says a protocol
+        <em>records</em> no token, never that it has none. A name the record keeps may still have a token
+        the record does not carry.</p>
+      </article>
+      <article class="panel">
+        <h2>How a launch is valued</h2>
+        <p class="formula">implied value = TVL &times; category multiple &times; momentum &times; maturity</p>
+        <ul class="rules">
+          <li><strong>Category multiple</strong> — the median market-cap-to-TVL of the launched protocols
+          in the same category, shrunk toward the market-wide median (a prior of 8) and winsorised to
+          0.02–3.0, the range the launched market actually shows.</li>
+          <li><strong>Momentum</strong> — three quarters of the seven-day TVL change, clamped to
+          0.55–1.75, so one wild week cannot rule a valuation.</li>
+          <li><strong>Maturity</strong> — 0.85 plus 0.075 per year since DefiLlama first tracked the
+          protocol, clamped to 0.85–1.15: a longer run with no token prices in more users and history.</li>
+        </ul>
+        <p class="caveat">The basis is circulating market cap, not fully diluted value — deliberately
+        conservative. Every row of the board prints its three factors, so any valuation on this page can
+        be re-computed by hand from the snapshot's figures.</p>
+      </article>
+    </div>
+    <article class="panel">
+      <h2>Calibration — what launched tokens fetch per $1 of TVL</h2>
+      <div class="table-wrap">
+        <table class="board compact" id="compTable">
+          <thead><tr><th>Category</th><th class="num">Launched peers</th><th class="num">Median mcap / TVL</th><th class="num">Multiple used</th></tr></thead>
+          <tbody id="compBody"></tbody>
+        </table>
+      </div>
+    </article>
+    <article class="panel">
+      <h2>Already launched — set aside, kept as the yardstick</h2>
+      <p>The largest of the protocols the radar sets aside because their token already trades.
+      They are not candidates; they are the evidence the multiples come from.</p>
+      <div class="table-wrap">
+        <table class="board compact" id="launchedTable">
+          <thead><tr><th>Protocol</th><th>Category</th><th class="num">TVL</th><th class="num">Market cap</th><th class="num">mcap / TVL</th></tr></thead>
+          <tbody id="launchedBody"></tbody>
+        </table>
+      </div>
+    </article>
+  </section>
+</main>
+
+<footer class="colophon">
+  <p>Built from a sealed DefiLlama snapshot — every protocol at $5M TVL or more, fetched once and read
+  identically by every run. An implied value is this board's own claim about what a launch would be worth
+  if the record stayed as it is; it is not a prediction that a token will be issued.</p>
+</footer>
+
+<script src="../data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
